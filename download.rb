@@ -6,11 +6,6 @@ Tumblr.configure do |config|
   config.consumer_secret = ENV['CONSUMER_SECRET']
 end
 
-limit = 20
-tumblr = Tumblr::Client.new
-blog = tumblr.posts('unsplash.com')
-
-
 download = proc do |url|
   filename = File.basename(url)
 
@@ -19,16 +14,12 @@ download = proc do |url|
   end
 end
 
+tumblr = Tumblr::Client.new
 
-posts = []
-
-begin
-  urls = tumblr.posts('unsplash.com', offset: offset ||= 0, limit: limit)['posts'].map do |post|
+urls = 0.step(tumblr.posts('unsplash.com')['total_posts'], limit = 20).flat_map do |offset|
+  tumblr.posts('unsplash.com', offset: offset, limit: limit)['posts'].map do |post|
     post['photos'].first['original_size']['url']
   end
+end
 
-  posts = posts.concat(urls)
-  offset += limit
-end while posts.count < blog['total_posts']
-
-posts.each &download
+urls.each &download
