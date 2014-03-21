@@ -11,8 +11,7 @@ tumblr = Tumblr::Client.new
 blog = tumblr.posts('unsplash.com')
 
 
-download = proc do |post|
-  url = post['photos'].first['original_size']['url']
+download = proc do |url|
   filename = File.basename(url)
 
   File.open "downloads/#{filename}", 'w' do |file|
@@ -24,7 +23,11 @@ end
 posts = []
 
 begin
-  posts = posts.concat(tumblr.posts('unsplash.com', offset: offset ||= 0, limit: limit)['posts'])
+  urls = tumblr.posts('unsplash.com', offset: offset ||= 0, limit: limit)['posts'].map do |post|
+    post['photos'].first['original_size']['url']
+  end
+
+  posts = posts.concat(urls)
   offset += limit
 end while posts.count < blog['total_posts']
 
