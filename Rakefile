@@ -21,10 +21,11 @@ module Unsplash
   def self.each
     return to_enum(__callee__) unless block_given?
 
+    base_uri = 'unsplash.com'
     tumblr = Tumblr::Client.new
 
-    0.step(tumblr.posts('unsplash.com')['total_posts'], limit = 20).each do |offset|
-      tumblr.posts('unsplash.com', offset: offset, limit: limit)['posts'].each do |post|
+    0.step(tumblr.posts(base_uri)['total_posts'], limit = 20).each do |offset|
+      tumblr.posts(base_uri, offset: offset, limit: limit)['posts'].each do |post|
         yield post['link_url'] || post['image_permalink']
       end
     end
