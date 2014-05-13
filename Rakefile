@@ -22,10 +22,12 @@ task :default do
 
   urls = 0.step(tumblr.posts('unsplash.com')['total_posts'], limit = 20).flat_map do |offset|
     tumblr.posts('unsplash.com', offset: offset, limit: limit)['posts'].each do |post|
-      file, url = download(post['link_url'])
-      filename = url.pathmap("downloads/#{post['post_url'].pathmap('%f')}%x").downcase
+      unless Dir[(filename = "downloads/#{post['id']}") + '*'].any?
+        file, url = download(post['link_url'] || post['image_permalink'])
+        filename = url.pathmap("#{filename}%x").downcase
 
-      File.write(filename, file.body)
+        File.write(filename, file.body)
+      end
       $stdout.putc '.'
       $stdout.flush
     end
