@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
 
 gem 'rake'
-gem 'rubysl-open-uri', require: 'open-uri'
+gem 'rubysl-net-http', require: 'net/http'
 gem 'tumblr_client'

@@ -10,7 +10,13 @@ GEM
     multipart-post (1.2.0)
     oauth (0.4.7)
     rake (10.3.1)
-    rubysl-open-uri (2.0.0)
+    rubysl-cgi (2.0.1)
+    rubysl-erb (2.0.1)
+    rubysl-net-http (2.0.4)
+      rubysl-cgi (~> 2.0)
+      rubysl-erb (~> 2.0)
+      rubysl-singleton (~> 2.0)
+    rubysl-singleton (2.0.0)
     simple_oauth (0.2.0)
     tumblr_client (0.8.2)
       faraday (>= 0.8)
@@ -25,5 +31,5 @@ PLATFORMS
 
 DEPENDENCIES
   rake
-  rubysl-open-uri
+  rubysl-net-http
   tumblr_client
