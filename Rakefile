@@ -26,6 +26,8 @@ task :default do
       filename = url.pathmap("downloads/#{post['post_url'].pathmap('%f')}%x").downcase
 
       File.write(filename, file.body)
+      $stdout.putc '.'
+      $stdout.flush
     end
   end
 end
