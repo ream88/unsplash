@@ -6,7 +6,7 @@ def download(url, limit = 10)
 
   case response = Net::HTTP.get_response(URI.parse(URI.encode(url.to_s)))
   when Net::HTTPSuccess
-    [response, url]
+    response.body
   when Net::HTTPRedirection
     download(response['location'], limit - 1)
   end
@@ -24,18 +24,15 @@ def each_post
 
   0.step(tumblr.posts('unsplash.com')['total_posts'], limit = 20).flat_map do |offset|
     tumblr.posts('unsplash.com', offset: offset, limit: limit)['posts'].each do |post|
-      yield post['id'], post['link_url'] || post['image_permalink']
+      yield post['link_url'] || post['image_permalink']
     end
   end
 end
 
 task :default do
-  each_post do |id, link|
-    unless Dir[(filename = "downloads/#{id}") + '*'].any?
-      file, url = download(link)
-      filename = url.pathmap("#{filename}%x").downcase
-
-      File.write(filename, file.body)
+  each_post do |link|
+    unless Dir[filename = link.pathmap('downloads/%f.jpg')].any?
+      File.write filename, download(link)
     end
 
     $stdout.putc '.'
