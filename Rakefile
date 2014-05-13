@@ -7,14 +7,6 @@ task :default do
     config.consumer_secret = ENV['CONSUMER_SECRET']
   end
 
-  download = proc do |url|
-    filename = File.basename(url)
-
-    File.open "downloads/#{filename}", 'w' do |file|
-      file << open(url).read
-    end
-  end
-
   tumblr = Tumblr::Client.new
 
   urls = 0.step(tumblr.posts('unsplash.com')['total_posts'], limit = 20).flat_map do |offset|
@@ -23,5 +15,7 @@ task :default do
     end
   end
 
-  urls.each &download
+  urls.each do |url|
+    File.write(url.pathmap('downloads/%f'), open(url).read)
+  end
 end
