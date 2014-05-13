@@ -9,6 +9,7 @@ GEM
     mime-types (2.2)
     multipart-post (1.2.0)
     oauth (0.4.7)
+    rake (10.3.1)
     rubysl-open-uri (2.0.0)
     simple_oauth (0.2.0)
     tumblr_client (0.8.2)
@@ -23,5 +24,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  rake
   rubysl-open-uri
   tumblr_client

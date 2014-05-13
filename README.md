@@ -3,7 +3,7 @@
 Download all pictures from [http://unsplash.com](http://unsplash.com) by running following on your command line:
 
 ```sh
-ruby download.rb
+CONSUMER_KEY=key CONSUMER_SECRET=secret rake
 ```
 
 ## License
