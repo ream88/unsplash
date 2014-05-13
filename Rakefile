@@ -12,7 +12,9 @@ def download(url, limit = 10)
   end
 end
 
-task :default do
+def each_post
+  return to_enum(__callee__) unless block_given?
+
   Tumblr.configure do |config|
     config.consumer_key    = ENV['CONSUMER_KEY']
     config.consumer_secret = ENV['CONSUMER_SECRET']
@@ -20,16 +22,23 @@ task :default do
 
   tumblr = Tumblr::Client.new
 
-  urls = 0.step(tumblr.posts('unsplash.com')['total_posts'], limit = 20).flat_map do |offset|
+  0.step(tumblr.posts('unsplash.com')['total_posts'], limit = 20).flat_map do |offset|
     tumblr.posts('unsplash.com', offset: offset, limit: limit)['posts'].each do |post|
-      unless Dir[(filename = "downloads/#{post['id']}") + '*'].any?
-        file, url = download(post['link_url'] || post['image_permalink'])
-        filename = url.pathmap("#{filename}%x").downcase
-
-        File.write(filename, file.body)
-      end
-      $stdout.putc '.'
-      $stdout.flush
+      yield post['id'], post['link_url'] || post['image_permalink']
     end
+  end
+end
+
+task :default do
+  each_post do |id, link|
+    unless Dir[(filename = "downloads/#{id}") + '*'].any?
+      file, url = download(link)
+      filename = url.pathmap("#{filename}%x").downcase
+
+      File.write(filename, file.body)
+    end
+
+    $stdout.putc '.'
+    $stdout.flush
   end
 end
