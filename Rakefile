@@ -23,7 +23,7 @@ module Unsplash
 
     tumblr = Tumblr::Client.new
 
-    0.step(tumblr.posts('unsplash.com')['total_posts'], limit = 20).flat_map do |offset|
+    0.step(tumblr.posts('unsplash.com')['total_posts'], limit = 20).each do |offset|
       tumblr.posts('unsplash.com', offset: offset, limit: limit)['posts'].each do |post|
         yield post['link_url'] || post['image_permalink']
       end
